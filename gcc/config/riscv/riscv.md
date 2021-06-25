@@ -2851,7 +2851,7 @@
                         if ((Pulp_Cpu>=PULP_V0) && !TARGET_MASK_NOSEXT) return "p.exthz\t%0,%1";
                         else return "#";
                 case 1:
-                        if ((Pulp_Cpu>=PULP_V0) && !TARGET_MASK_NOINDREGREG) {
+                        if ((Pulp_Cpu>=PULP_V0 || Pulp_Cpu==PULP_SPIN) && !TARGET_MASK_NOINDREGREG) {
                                 rtx Addr = XEXP(operands[1], 0);
                                 if (GET_CODE(Addr) == PLUS && (GET_CODE(XEXP(Addr, 1)) == REG || GET_CODE(XEXP(Addr, 1)) == SUBREG))
                                         return "p.lhu\t%0,%1";
@@ -2881,7 +2881,7 @@
         switch (which_alternative) {
                 case 0: return "and\t%0,%1,0xff";
                 case 1:
-                        if ((Pulp_Cpu>=PULP_V0) && !TARGET_MASK_NOINDREGREG) {
+                        if ((Pulp_Cpu>=PULP_V0 || Pulp_Cpu==PULP_SPIN) && !TARGET_MASK_NOINDREGREG) {
                                 rtx Addr = XEXP(operands[1], 0);
                                 if (GET_CODE(Addr) == PLUS && (GET_CODE(XEXP(Addr, 1)) == REG || GET_CODE(XEXP(Addr, 1)) == SUBREG))
                                         return "p.lbu\t%0,%1";
@@ -2925,7 +2925,7 @@
                         if ((Pulp_Cpu>=PULP_V0) && !TARGET_MASK_NOSEXT) return "p.ext<SHORT:size>s\t%0,%1";
                         else return "#";
                 case 1:
-                        if ((Pulp_Cpu>=PULP_V0) && !TARGET_MASK_NOINDREGREG) {
+                        if ((Pulp_Cpu>=PULP_V0 || Pulp_Cpu == PULP_SPIN) && !TARGET_MASK_NOINDREGREG) {
                                 rtx Addr = XEXP(operands[1], 0);
                                 if (GET_CODE(Addr) == PLUS && (GET_CODE(XEXP(Addr, 1)) == REG || GET_CODE(XEXP(Addr, 1)) == SUBREG))
                                         return "p.l<SHORT:size>\t%0,%1";
@@ -3294,7 +3294,7 @@
                               (match_operand:SI 2 "register_operand" "r")))
    )
   ]
-  "((Pulp_Cpu>=PULP_V0) && !TARGET_MASK_NOINDREGREG)"
+  "((Pulp_Cpu>=PULP_V0 || Pulp_Cpu==PULP_SPIN) && !TARGET_MASK_NOINDREGREG)"
   "p.l<size_load_store>\t%0,%2(%1)\t# load reg(reg)"
   [(set_attr "type" "load")
    (set_attr "mode" "<LDSTINDMODE>")]
@@ -3306,7 +3306,7 @@
                                      (match_operand:SI 2 "register_operand" "r"))))
    )
   ]
-  "((Pulp_Cpu>=PULP_V0) && !TARGET_MASK_NOINDREGREG)"
+  "((Pulp_Cpu>=PULP_V0 || Pulp_Cpu==PULP_SPIN) && !TARGET_MASK_NOINDREGREG)"
   "p.l<size_load_store><u>\t%0,%2(%1)\t# load reg(reg), ext"
   [(set_attr "type" "load")
    (set_attr "mode" "<LDSTINDMODE>")]
@@ -3318,7 +3318,7 @@
         (match_operand:SUBDISF 2 "nonmemory_operand" "r,J")
    )
   ]
-  "((Pulp_Cpu>=PULP_V0) && !TARGET_MASK_NOINDREGREG)"
+  "((Pulp_Cpu>=PULP_V0 || Pulp_Cpu==PULP_SPIN) && !TARGET_MASK_NOINDREGREG)"
   "@
    p.s<size_load_store>\t%2,%1(%0)\t# store reg(reg)
    p.s<size_load_store>\tx0,%1(%0)\t# store 0 reg(reg)"
@@ -3666,7 +3666,7 @@
         (mem:SUBDISF (post_inc:SI (match_operand:SI 1 "register_operand" "+r")))
    )
   ]
-  "((Pulp_Cpu>=PULP_V0) && !TARGET_MASK_NOPOSTMOD)"
+  "((Pulp_Cpu>=PULP_V0 || Pulp_Cpu==PULP_SPIN) && !TARGET_MASK_NOPOSTMOD)"
   "p.l<size_load_store>\t%0,<size_mem>(%1!)\t# load post inc"
   [(set_attr "type" "load")
    (set_attr "mode" "<LDSTINDMODE>")]
@@ -3679,7 +3679,7 @@
         )
    )
   ]
-  "((Pulp_Cpu>=PULP_V0) && !TARGET_MASK_NOPOSTMOD)"
+  "((Pulp_Cpu>=PULP_V0 || Pulp_Cpu==PULP_SPIN) && !TARGET_MASK_NOPOSTMOD)"
   "p.l<size_load_store><u>\t%0,<size_mem>(%1!)\t# load post inc, ext"
   [(set_attr "type" "load")
    (set_attr "mode" "<LDSTINDMODE>")]
@@ -3690,7 +3690,7 @@
         (mem:SUBDISF (post_dec:SI (match_operand:SI 1 "register_operand" "+r")))
    )
   ]
-  "((Pulp_Cpu>=PULP_V0) && !TARGET_MASK_NOPOSTMOD)"
+  "((Pulp_Cpu>=PULP_V0 || Pulp_Cpu==PULP_SPIN) && !TARGET_MASK_NOPOSTMOD)"
   "p.l<size_load_store>\t%0,-<size_mem>(%1!)\t# load post dec"
   [(set_attr "type" "load")
    (set_attr "mode" "<LDSTINDMODE>")]
@@ -3703,7 +3703,7 @@
         )
    )
   ]
-  "((Pulp_Cpu>=PULP_V0) && !TARGET_MASK_NOPOSTMOD)"
+  "((Pulp_Cpu>=PULP_V0 || Pulp_Cpu==PULP_SPIN) && !TARGET_MASK_NOPOSTMOD)"
   "p.l<size_load_store><u>\t%0,-<size_mem>(%1!)\t# load post dec, ext"
   [(set_attr "type" "load")
    (set_attr "mode" "<LDSTINDMODE>")]
@@ -3716,7 +3716,7 @@
                                      (plus:SI (match_dup 1) (match_operand:SI 2 "nonmemory_operand" "r,I"))))
    )
   ]
-  "((Pulp_Cpu>=PULP_V0) && !TARGET_MASK_NOPOSTMOD)"
+  "((Pulp_Cpu>=PULP_V0 || Pulp_Cpu==PULP_SPIN) && !TARGET_MASK_NOPOSTMOD)"
   "@
    p.l<size_load_store>\t%0,%2(%1!)\t# load post modify reg
    p.l<size_load_store>\t%0,%2(%1!)\t# load post modify imm"
@@ -3732,7 +3732,7 @@
         )
    )
   ]
-  "((Pulp_Cpu>=PULP_V0) && !TARGET_MASK_NOPOSTMOD)"
+  "((Pulp_Cpu>=PULP_V0 || Pulp_Cpu==PULP_SPIN) && !TARGET_MASK_NOPOSTMOD)"
   "@
    p.l<size_load_store><u>\t%0,%2(%1!)\t# load post modify reg, ext
    p.l<size_load_store><u>\t%0,%2(%1!)\t# load post modify imm, ext"
@@ -3745,7 +3745,7 @@
         (match_operand:SUBDISF 1 "nonmemory_operand" "r,J")
    )
   ]
-  "((Pulp_Cpu>=PULP_V0) && !TARGET_MASK_NOPOSTMOD)"
+  "((Pulp_Cpu>=PULP_V0 || Pulp_Cpu==PULP_SPIN) && !TARGET_MASK_NOPOSTMOD)"
   "@
    p.s<size_load_store>\t%1,<size_mem>(%0!)\t# store post inc
    p.s<size_load_store>\tx0,<size_mem>(%0!)\t# store 0 post inc"
@@ -3758,7 +3758,7 @@
         (match_operand:SUBDISF 1 "nonmemory_operand" "r,J")
    )
   ]
-  "((Pulp_Cpu>=PULP_V0) && !TARGET_MASK_NOPOSTMOD)"
+  "((Pulp_Cpu>=PULP_V0 || Pulp_Cpu==PULP_SPIN) && !TARGET_MASK_NOPOSTMOD)"
   "@
    p.s<size_load_store>\t%1,-<size_mem>(%0!)\t# store post dec
    p.s<size_load_store>\tx0,-<size_mem>(%0!)\t# store 0 post dec"
@@ -3772,7 +3772,7 @@
         (match_operand:SUBDISF 1 "nonmemory_operand" "r,J,r,J")
    )
   ]
-  "((Pulp_Cpu>=PULP_V0) && !TARGET_MASK_NOPOSTMOD)"
+  "((Pulp_Cpu>=PULP_V0 || Pulp_Cpu==PULP_SPIN) && !TARGET_MASK_NOPOSTMOD)"
   "@
    p.s<size_load_store>\t%1,%2(%0!)\t# store post modify reg
    p.s<size_load_store>\tx0,%2(%0!)\t# store 0 post modify reg

@@ -87,6 +87,9 @@ Enum(Pulp_Processor_Type) String(pulpv1) Value(PULP_V1)
 EnumValue
 Enum(Pulp_Processor_Type) String(pulpv2) Value(PULP_V2)
 
+EnumValue
+Enum(Pulp_Processor_Type) String(pspin) Value(PULP_SPIN)
+
 ;; __GAP8 Start
 
 EnumValue
