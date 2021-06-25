@@ -1870,7 +1870,7 @@ riscv_address_cost (rtx addr, enum machine_mode mode,
   int n = 1;
 
   if (riscv_address_insns (addr, mode, false)) {
-    if ((Pulp_Cpu>=PULP_V0) && !TARGET_MASK_NOPOSTMOD) {
+    if ((Pulp_Cpu>=PULP_V0 || Pulp_Cpu==PULP_SPIN) && !TARGET_MASK_NOPOSTMOD) {
         if (TARGET_MASK_NOFINDUCT) {
                 riscv_classify_address (&addr_info, addr, mode, false);
                 /* Discourage *reg(reg) since this pattern decrease induction attractiviry */
@@ -2011,7 +2011,7 @@ riscv_output_move (rtx dest, rtx src)
         int Prefix=0;
 
         riscv_classify_address (&addr, XEXP (src, 0), word_mode, true);
-        if ((Pulp_Cpu>=PULP_V0) && !TARGET_MASK_NOINDREGREG) {
+        if ((Pulp_Cpu>=PULP_V0 || Pulp_Cpu==PULP_SPIN) && !TARGET_MASK_NOINDREGREG) {
                 if (addr.type == ADDRESS_REG_REG) Prefix = 1;
         }
 	if (addr.type == ADDRESS_REG_POST_INC || addr.type == ADDRESS_REG_POST_DEC || addr.type == ADDRESS_REG_POST_MODIFY) Prefix = 1;
@@ -2081,7 +2081,7 @@ riscv_output_move (rtx dest, rtx src)
         int Prefix=0;
 
         riscv_classify_address (&addr, XEXP (dest, 0), word_mode, true);
-        if ((Pulp_Cpu>=PULP_V0) && !TARGET_MASK_NOINDREGREG) {
+        if ((Pulp_Cpu>=PULP_V0 || Pulp_Cpu==PULP_SPIN) && !TARGET_MASK_NOINDREGREG) {
                 if (addr.type == ADDRESS_REG_REG) Prefix = 1;
         }
 	if (addr.type == ADDRESS_REG_POST_INC || addr.type == ADDRESS_REG_POST_DEC || addr.type == ADDRESS_REG_POST_MODIFY) Prefix = 1;
