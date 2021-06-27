@@ -849,7 +849,7 @@ riscv_classify_address (struct riscv_address_info *info, rtx x,
       info->reg = XEXP (x, 0);
       info->offset = XEXP (x, 1);
 
-      if (((Pulp_Cpu>=PULP_V0) && !TARGET_MASK_NOINDREGREG && (GET_MODE_SIZE (mode) <= UNITS_PER_WORD) ) &&
+      if (((Pulp_Cpu>=PULP_V0 || Pulp_Cpu==PULP_SPIN) && !TARGET_MASK_NOINDREGREG && (GET_MODE_SIZE (mode) <= UNITS_PER_WORD) ) &&
           !((TARGET_HARD_FLOAT &&!TARGET_FPREGS_ON_GRREGS) && (IsFloatMode(mode))) &&
           ((GET_CODE(info->offset) == REG) || (GET_CODE(info->offset) == SUBREG))) {
                 info->type = ADDRESS_REG_REG;
@@ -5378,7 +5378,7 @@ static bool
 riscv_can_use_doloop_p (const widest_int &, const widest_int &,
                       unsigned int loop_depth, bool entered_at_top)
 {
-        if ((Pulp_Cpu<PULP_V1) || TARGET_MASK_NOHWLOOP) return 0;
+        if ((Pulp_Cpu<PULP_V1 && Pulp_Cpu!=PULP_SPIN) || TARGET_MASK_NOHWLOOP) return 0;
 
 // printf("Loop entered at top: %d\n", entered_at_top);
         return (entered_at_top && (loop_depth <= 2));
@@ -5810,10 +5810,11 @@ hwloop_optimize (hwloop_info loop)
 			if immediate(iter_reg) and if 0 <= imm_value <= 2047
 				we can use lp.counti level, imm_value
 		*/
-		if (init_iter_is_constant && (init_iter_value < 4095))
+		if (init_iter_is_constant && (init_iter_value < 4095)) {
 			seq_end = emit_insn(gen_set_hwloop_lc  (lc_reg, gen_int_mode(init_iter_value, SImode), gen_int_mode (loop_index, SImode)));
-		else
+    } else {
 			seq_end = emit_insn(gen_set_hwloop_lc  (lc_reg, iter_reg,                              gen_int_mode (loop_index, SImode)));
+    }
 		emit_insn(gen_set_hwloop_lpstart(ls_reg, gen_rtx_LABEL_REF (Pmode, start_label), gen_int_mode (loop_index, SImode)));
 		emit_insn(gen_set_hwloop_lpend  (le_reg, gen_rtx_LABEL_REF (Pmode,   end_label), gen_int_mode (loop_index, SImode)));
 
@@ -5841,7 +5842,6 @@ hwloop_optimize (hwloop_info loop)
 
 	}
 	insn_insert = (BB_HEAD (loop->head));
-
   if (dump_file)
     {
       fprintf (dump_file, ";; replacing loop %d initializer with\n",
@@ -5995,7 +5995,7 @@ hwloop_pattern_reg (rtx_insn *insn)
 {
   rtx reg;
 
-  if ((Pulp_Cpu<PULP_V1) || TARGET_MASK_NOHWLOOP || !JUMP_P (insn) || recog_memoized (insn) != CODE_FOR_loop_end)
+  if ((Pulp_Cpu<PULP_V1 && Pulp_Cpu!=PULP_SPIN) || TARGET_MASK_NOHWLOOP || !JUMP_P (insn) || recog_memoized (insn) != CODE_FOR_loop_end)
     return NULL_RTX;
 
   reg = SET_DEST (XVECEXP (PATTERN (insn), 0, 1));

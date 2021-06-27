@@ -7952,7 +7952,7 @@
               (const_int -1)))
    (unspec [(const_int 0)] UNSPEC_LSETUP_END)
    (clobber (match_scratch:SI 3 "=X,&r"))]
-  "(Pulp_Cpu>=PULP_V1) && !TARGET_MASK_NOHWLOOP && optimize"
+  "(Pulp_Cpu>=PULP_V1 || Pulp_Cpu==PULP_SPIN) && !TARGET_MASK_NOHWLOOP && optimize"
   "#"
   [(set_attr "length" "0")]
 ;;  [(set_attr "type"   "branch")
@@ -7970,7 +7970,7 @@
                  (const_int -1)))
    (unspec [(const_int 0)] UNSPEC_LSETUP_END)
    (clobber (match_scratch 3))]
-  "(Pulp_Cpu>=PULP_V1) && !TARGET_MASK_NOHWLOOP && reload_completed"
+  "(Pulp_Cpu>=PULP_V1 || Pulp_Cpu==PULP_SPIN) && !TARGET_MASK_NOHWLOOP && reload_completed"
   [(const_int 0)]
 {
   if (!REG_P (operands[0]))
@@ -8025,7 +8025,7 @@
                       (pc)))
    (set (match_operand:SI 0 "register_operand" "=r") (plus (match_dup 2) (const_int -1)))
    (unspec [(const_int 0)] UNSPEC_LSETUP_END)]
- "((Pulp_Cpu>=PULP_V1) && !TARGET_MASK_NOHWLOOP)"
+ "((Pulp_Cpu>=PULP_V1 || Pulp_Cpu==PULP_SPIN) && !TARGET_MASK_NOHWLOOP)"
  "/* loop end %0 %l1 */ "
   [(set_attr "length" "0")]
 ;; [(set_attr "type" "branch")
