@@ -116,7 +116,7 @@ riscv_parse_arch_string (const char *isa, int *flags, location_t loc)
                         break;
                 /* Xpspin extension */
                 case PULP_SPIN:
-                        *flags &= ~MASK_64BIT; *flags &= ~MASK_MUL; *flags &= ~MASK_ATOMIC;
+                        *flags &= ~MASK_64BIT; *flags |= MASK_MUL; *flags &= ~MASK_ATOMIC;
                         riscv_abi = ABI_ILP32;
                         if (Pulp_Cpu == PULP_NONE || Pulp_Cpu == PULP_SPIN) Pulp_Cpu = PULP_SPIN;
                         else error("-Xpspin: pulp architecture is already defined as %s", PulpProcessorImage(Pulp_Cpu));

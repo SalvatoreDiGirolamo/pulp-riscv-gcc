@@ -670,7 +670,7 @@
   "(Pulp_Cpu>=PULP_V0) || TARGET_MUL || (Pulp_Cpu==PULP_SLIM)"
   {
         if (TARGET_64BIT) return "mulw\t%0,%1,%2";
-        else if (Pulp_Cpu) return "p.mul\t%0,%1,%2";
+        else if (Pulp_Cpu>=PULP_V0) return "p.mul\t%0,%1,%2";
         else return "mul\t%0,%1,%2";
   }
   [(set_attr "type" "imul")
@@ -804,7 +804,7 @@
 	    (const_int 32))))]
   "(TARGET_MUL||(Pulp_Cpu>=PULP_V2)||(Pulp_Cpu==PULP_SLIM)) && !TARGET_64BIT"
   {
-        if (Pulp_Cpu) return "p.mulh<u>\t%0,%1,%2";
+        if (Pulp_Cpu>=PULP_V2) return "p.mulh<u>\t%0,%1,%2";
         else return "mulh<u>\t%0,%1,%2";
   }
   [(set_attr "type" "imul")
@@ -838,7 +838,7 @@
 	    (const_int 32))))]
   "(TARGET_MUL||(Pulp_Cpu>=PULP_V2)||(Pulp_Cpu==PULP_SLIM)) && !TARGET_64BIT"
   {
-        if (Pulp_Cpu) return "p.mulhsu\t%0,%2,%1";
+        if (Pulp_Cpu>=PULP_V2) return "p.mulhsu\t%0,%2,%1";
         else return "mulhsu\t%0,%2,%1";
   }
   [(set_attr "type" "imul")
@@ -857,7 +857,7 @@
 	(any_div:SI (match_operand:SI 1 "register_operand" " r")
 		    (match_operand:SI 2 "register_operand" " r")))]
   "(TARGET_DIV || ((Pulp_Cpu >= PULP_V2)||(Pulp_Cpu==PULP_SLIM)))"
-  { return TARGET_64BIT ? "<insn>w\t%0,%1,%2" : Pulp_Cpu?"p.<insn>\t%0,%1,%2":"<insn>\t%0,%1,%2"; }
+  { return TARGET_64BIT ? "<insn>w\t%0,%1,%2" : (Pulp_Cpu>=PULP_V2)?"p.<insn>\t%0,%1,%2":"<insn>\t%0,%1,%2"; }
 
   [(set_attr "type" "idiv")
    (set_attr "mode" "SI")])
